@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script src="assets/script/data.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Ruda:wght@400;800&display=swap" rel="stylesheet" />
+    <title>Income</title>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="h1">Record an Income</div>
+      <form method="post" id="income-form">
+        <input type="datetime-local" id="date" name="date" class="form-control" placeholder="Date & Time" required />
+        <input
+          type="number"
+          id="value"
+          name="value"
+          class="form-control"
+          placeholder="Amount in Transaction Currency"
+          step="any"
+          required />
+        <select class="form-select" id="account" name="account" required>
+          <option selected disabled value="">Select Account</option>
+        </select>
+        <select class="form-select" id="currency" name="currency" required>
+          <option selected disabled value="">Select Currency</option>
+        </select>
+        <select class="form-select" id="inc_category" name="inc_category" required>
+          <option selected disabled value="">Select Category</option>
+        </select>
+        <select class="form-select" id="sub_category" name="sub_category" required>
+          <option selected disabled value="">Select Sub-Category</option>
+        </select>
+        <input type="text" class="form-control" id="notes" name="notes" placeholder="Notes" />
+        <textarea
+          id="description"
+          name="description"
+          class="form-control"
+          rows="4"
+          cols="50"
+          placeholder="Detailed description of this transaction"></textarea>
+        <div class="alert-danger visually-hidden" id="alert">Please fill the mandatory fields.</div>
+        <select class="form-select visually-hidden" id="w_currency" name="w_currency"></select>
+      </form>
+      <script>
+        var title = document.title;
+        Telegram.WebApp.ready();
+        Telegram.WebApp.expand();
+        Telegram.WebApp.MainButton.setText('SUBMIT INCOME');
+        Telegram.WebApp.MainButton.show();
+      </script>
+      <script src="assets/script/script.js"></script>
+    </div>
+  </body>
+</html>
