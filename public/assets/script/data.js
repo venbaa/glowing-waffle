@@ -1,29 +1,66 @@
-// This function updates the drop down using the data file
+const urlParams = new URLSearchParams(window.location.search);
+const encryptionKey = urlParams.get('key');
+const iv = urlParams.get('iv');
 
-function updateDropDown(sourceData, sourceColHeader, targetElementID, conditionColHeader, conditionVal) {
-    fetch(sourceData)
-      .then((response) => response.json())
-      .then((data) => {
-        try {
-          var element = document.getElementById(targetElementID);
-          var uniqueValues = new Set();
-          data.forEach((item) => {
-            var value = item[sourceColHeader];
-            if (!uniqueValues.has(value)) {
-              if (item[conditionColHeader] == conditionVal) {
-                var option = document.createElement('option');
-                option.text = value;
-                element.appendChild(option);
-                uniqueValues.add(value); // Add value to Set
-              }
-            }
-          });
-          element.selectedIndex = 0;
-        } catch (err) {
-          console.log(err.message);
-        }
-      });
+async function decryptFile(encryptionKey, iv, jsonFile) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    hexToUint8Array(encryptionKey),
+    'AES-CBC',
+    false,
+    ['decrypt']
+  );
+
+  const ivBytes = hexToUint8Array(iv);
+
+  const response = await fetch(jsonFile);
+  const encryptedData = await response.arrayBuffer();
+  const decryptedData = await crypto.subtle.decrypt(
+    { name: 'AES-CBC', iv: ivBytes },
+    key,
+    encryptedData
+  );
+  const jsonData = new TextDecoder().decode(decryptedData);
+  console.log(jsonData);
+
+  return jsonData;
+}
+
+function hexToUint8Array(hex) {
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < hex.length; i += 2) {
+    bytes[i / 2] = parseInt(hex.substr(i, 2), 16);
   }
+  return bytes;
+}
+
+function updateDropDown(sourceData, sourceColHeader, targetElementID, conditionColHeader, conditionVal, encryptionKey, iv) {
+  decryptFile(encryptionKey, iv, sourceData)
+    .then((jsonData) => {
+      try {
+        const element = document.getElementById(targetElementID);
+        const uniqueValues = new Set();
+        const data = JSON.parse(jsonData);
+
+        data.forEach((item) => {
+          const value = item[sourceColHeader];
+          if (!uniqueValues.has(value) && item[conditionColHeader] === conditionVal) {
+            const option = document.createElement('option');
+            option.text = value;
+            element.appendChild(option);
+            uniqueValues.add(value);
+          }
+        });
+
+        element.selectedIndex = 0;
+      } catch (err) {
+        console.log(err.message);
+      }
+    })
+    .catch((error) => {
+      console.log('Decryption error:', error);
+    });
+}
   
   // This function updates the dependent drop down
   function updateDependentDropDown(sourceData, parentColHeader, dependentColHeader, parentElementId, dependantElementId) {
