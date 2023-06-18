@@ -4,6 +4,7 @@ const encryptionKey = urlParams.get('key');
 const iv = urlParams.get('iv');
 
 async function decryptFile(encryptionKey, iv, jsonFile) {
+  console.log(encryptionKey)
   const key = await crypto.subtle.importKey(
     'raw',
     hexToUint8Array(encryptionKey),
@@ -15,12 +16,15 @@ async function decryptFile(encryptionKey, iv, jsonFile) {
   const ivBytes = hexToUint8Array(iv);
 
   const response = await fetch(jsonFile);
+  console.log('response: ' +  response)
   const encryptedData = await response.arrayBuffer();
+  console.log('encryptedData :' + encryptedData)
   const decryptedData = await crypto.subtle.decrypt(
     { name: 'AES-CBC', iv: ivBytes },
     key,
     encryptedData
   );
+  console.log('decryptedData: ' + decryptedData)
   const jsonData = new TextDecoder().decode(decryptedData);
   console.log(jsonData);
 
