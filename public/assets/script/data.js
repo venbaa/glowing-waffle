@@ -61,7 +61,7 @@ function updateDropDown(sourceData, sourceColHeader, targetElementID, conditionC
       console.log('Decryption error:', error);
     });
 }
-  
+
   // This function updates the dependent drop down
   function updateDependentDropDown(sourceData, parentColHeader, dependentColHeader, parentElementId, dependantElementId) {
     fetch(sourceData)
@@ -109,24 +109,24 @@ function updateDropDown(sourceData, sourceColHeader, targetElementID, conditionC
   };
   
   // Expense & Income & Transfer
-  updateDropDown('data/currency_data.json', 'code', 'currency');
-  updateDropDown('data/currency_data.json', 'code', 'w_currency');
-  updateDropDown('data/account_data.json', 'account', 'account', 'hide', 'No');
+  updateDropDown('data/currency_data.json', 'code', 'currency', encryptionKey, iv);
+  updateDropDown('data/currency_data.json', 'code', 'w_currency', encryptionKey, iv );
+  updateDropDown('data/account_data.json', 'account', 'account', 'hide', 'No', encryptionKey, iv);
   updateDependentDropDown('data/account_data.json', 'account', 'base_currency', 'account', 'currency');
   updateDependentDropDown('data/account_data.json', 'account', 'base_currency', 'account', 'w_currency');
   
   // Expense
-  updateDropDown('data/category_data.json', 'category', 'exp_category', 'transaction_type', 'Expense');
+  updateDropDown('data/category_data.json', 'category', 'exp_category', 'transaction_type', 'Expense', encryptionKey, iv);
   updateDependentDropDown('data/category_data.json', 'category', 'sub_category', 'exp_category', 'sub_category');
   
   // Income
-  updateDropDown('data/category_data.json', 'category', 'inc_category', 'transaction_type', 'Income');
+  updateDropDown('data/category_data.json', 'category', 'inc_category', 'transaction_type', 'Income', encryptionKey, iv);
   updateDependentDropDown('data/category_data.json', 'category', 'sub_category', 'inc_category', 'sub_category');
   
   // Transfer
-  updateDropDown('data/currency_data.json', 'code', 'tw_currency');
-  updateDropDown('data/currency_data.json', 'code', 'fw_currency');
-  updateDropDown('data/account_data.json', 'account', 'from_account', 'hide', 'No');
-  updateDropDown('data/account_data.json', 'account', 'to_account', 'hide', 'No');
+  updateDropDown('data/currency_data.json', 'code', 'tw_currency', encryptionKey, iv);
+  updateDropDown('data/currency_data.json', 'code', 'fw_currency', encryptionKey, iv);
+  updateDropDown('data/account_data.json', 'account', 'from_account', 'hide', 'No', encryptionKey, iv);
+  updateDropDown('data/account_data.json', 'account', 'to_account', 'hide', 'No', encryptionKey, iv);
   updateDependentDropDown('data/account_data.json', 'account', 'base_currency', 'to_account', 'tw_currency');
   
